@@ -1,0 +1,24 @@
+{
+  "name": "koajs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "asynquence": "^0.1.0",
+    "bluebird": "^2.9.34",
+    "halson": "^2.3.1",
+    "joi": "^6.6.1",
+    "koa": "^0.21.0",
+    "koa-hal": "^2.1.0",
+    "koa-joi-router": "^2.0.0",
+    "lodash": "^3.10.1",
+    "monk": "^1.0.1",
+    "sqlite3": "^3.0.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
