@@ -4,12 +4,12 @@ module.exports = PostSqliteRepository;
 
 function PostSqliteRepository(db) {
   this.db = db;
-  this.selectColumns = 'id, title, text, createdAt';
+  this.selectColumns = 'id, title, text, created_at';
   this.table = 'post';
 }
 
 PostSqliteRepository.prototype.init = function() {
-  return this._run('CREATE TABLE IF NOT EXISTS ' + this.table + ' (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, `text` TEXT, createdAt DATETIME)');
+  return this._run('CREATE TABLE IF NOT EXISTS ' + this.table + ' (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, `text` TEXT, created_at DATETIME)');
 }
 
 PostSqliteRepository.prototype.get = function(id) {
@@ -28,7 +28,7 @@ PostSqliteRepository.prototype.getAll = function() {
 
 PostSqliteRepository.prototype.post = function(data) {
   
-  return this._insert('INSERT INTO ' + this.table + ' (title, text, createdAt) VALUES ($title, $text, $createdAt)', {
+  return this._insert('INSERT INTO ' + this.table + ' (title, text, created_at) VALUES ($title, $text, $createdAt)', {
     $title: data.title,
     $text: data.text,
     $createdAt: new Date()
@@ -118,8 +118,8 @@ function transformDoc(doc) {
     return doc;
   }
   
-  if(doc.createdAt) {
-    doc.createdAt = new Date(doc.createdAt)
+  if(doc.created_at) {
+    doc.created_at = new Date(doc.created_at)
   }
   
   return doc;

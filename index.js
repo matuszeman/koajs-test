@@ -60,11 +60,12 @@ apiPostRouter.route({
   method: 'post',
   path: '/',
   validate: {
+    type: 'json',
+    failure: 422,
     body: {
       title: Joi.string().required(),
       text: Joi.string().required()
-    },
-    type: 'json'
+    }
   },
   handler: function*() {
     var itemId = yield postRepository.post(this.request.body);
@@ -78,17 +79,23 @@ apiPostRouter.route({
   method: 'put',
   path: '/:id',
   validate: {
-    body: {
-      title: Joi.string().required(),
-      text: Joi.string().required()
-    },
+    type: 'json',
+    failure: 422,
     params: {
       id: Joi.string().required()
     },
-    type: 'json'
+    body: {
+      title: Joi.string().required(),
+      text: Joi.string().required()
+    }
   },
   handler: function*() {
     var id = this.params.id;
+
+    var entity = yield postRepository.get(id);
+    if(!entity) {
+      return this.status = 404;
+    }
     
     yield postRepository.put(id, this.request.body);
 
@@ -116,6 +123,11 @@ apiPostRouter.route({
   },
   handler: function*() {
     var id = this.params.id;
+    
+    var entity = yield postRepository.get(id);
+    if(!entity) {
+      return this.status = 404;
+    }
 
     yield postRepository.delete(id);
     
