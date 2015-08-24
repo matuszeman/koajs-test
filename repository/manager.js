@@ -27,7 +27,7 @@ RepositoryManager.prototype.get = function(name) {
     this.repositories[name] = new Repo(this.db);
   }
   
-  return this.repositories[name];;
+  return this.repositories[name];
 }
 
 function validateOptions(options) {

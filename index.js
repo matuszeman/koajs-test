@@ -7,12 +7,12 @@ var Joi = router.Joi;
 
 var RepositoryManager = require('./repository/manager');
 
-var config = _.assign(require('./config/server'), require('./config/server.local.js'));
+var config = require('./config/server');
 console.log('App config:', config); //XXX
 
 //API: posts
-var manager = new RepositoryManager(config.repositoryManager);
-var postRepository = manager.get('post');
+var repositoryManager = new RepositoryManager(config.repositoryManager);
+var postRepository = repositoryManager.get('post');
 
 var apiPostRouter = router();
 
@@ -140,14 +140,13 @@ function createPostHal(item) {
 }
 
 //APP INIT
-init().then(function() {
-  var app = koa();
-  app.use(koahal());
-  app.use(apiPostRouter.middleware());
-  app.listen(config.port);
-})
+var app = koa();
 
-function init() {
-  return manager.init()
-}
+app.use(koahal());
+app.use(apiPostRouter.middleware());
+app.listen(config.port);
 
+module.exports = {
+  app: app,
+  repositoryManager: repositoryManager
+};

@@ -44,5 +44,10 @@ if(env) {
   }
 }
 
-module.exports = _.assign(defaultConfig, envConfig)
+var localConfig = null;
+if(env !== 'test') {
+  localConfig = require('./server.local.js');
+}
+
+module.exports = _.assign(defaultConfig, envConfig, localConfig);
 

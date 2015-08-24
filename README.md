@@ -45,6 +45,7 @@ Possible improvements
 =====================
 
 - Create route factory where you would just inject repository object and all routes would be created - now it's hardcoded for post repository only
+- Split env configs into individual files
 - Refactor `repository/post.sqlite` and `repository/post.mongo` and create 'abstract classes' for sqlite and mongodb repositories. 
 - Implement API Problem responses (application/problem+json)
 - ... many more ;)
