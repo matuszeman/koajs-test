@@ -30,13 +30,13 @@ cp config/server.local.js.sample config/server.local.js
 
 DB setup
 
-This initialize repository i.e. create sqlite table for posts (if sqlite repo is selected in config, this does nothing for mongo repo)
+This initialize repository i.e. create sqlite table for posts (if sqlite repo is selected in config). This does nothing when using mongo repo.
 
 ```
 node --harmony migrate.js
 ```
 
-___Note:___ Migrations are ran manually, so for obvious reasons, server with :memory: storage won't work with the server.
+_Note: We run db init/migration using this separate script thus server won't work with sqlite :memory: storage - this storage is used for tests only._
 
 
 __To run:__
