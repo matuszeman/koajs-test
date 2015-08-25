@@ -1,6 +1,44 @@
 KoaJS test app
 ==============
 
+An application to test RESTful API development using KoaJS. The app implements the endpoints below following [HAL specification](http://stateless.co/hal_specification.html):
+
+GET    /posts     - lists all of the available posts  
+POST   /posts     - create a new post with a title and text properties  
+GET    /posts/:id - returns details about a post (id, title, text, created_at)  
+PUT    /posts/:id - updates a post  
+DELETE /posts/:id - deletes a post  
+DELETE /posts     - deletes all posts  
+
+
+Implements two storage types (mongo, sqlite) which can be selected from config file. 
+ 
+
+__Installation__
+
+```
+npm install
+```
+
+Set NODE_ENV to either prod/dev and create local config file
+
+```
+export NODE_ENV=dev
+
+cp config/server.local.js.sample config/server.local.js
+```
+
+DB setup
+
+This initialize repository i.e. create sqlite table for posts (if sqlite repo is selected in config, this does nothing for mongo repo)
+
+```
+node --harmony migrate.js
+```
+
+___Note:___ Migrations are ran manually, so for obvious reasons, server with :memory: storage won't work with the server.
+
+
 __To run:__
 
 ```
@@ -8,17 +46,6 @@ node --harmony index.js
 ```
 
 API endpoint: http://localhost:3000/posts
-
-__DB setup / migrations:__
-
-This initialize repository i.e. create sqlite table for posts.
-
-```
-node --harmony migrate.js
-```
-
-___Note:___ We want to run migrations manually, so for obvious reasons, server with :memory: storage won't work.
-
 
 
 __To run tests:__
@@ -33,8 +60,8 @@ __Configuration:__
 File: `config/server`
 
 Among default configuration this also implements three environments (test, dev, prod) which are selected depending on NODE_ENV value.  
-`index.js` also implements 3rd level configuration - local config `server.local.js` which MUST NOT be committed into RCS.  
-This should only include deployment specific configuration like database username/password.
+Default env config values can be overwritten by local config `server.local.js` which MUST NOT be committed into RCS.
+This file might include deployment specific or sensitive values like database username/password.
 
 
 DB implementations
