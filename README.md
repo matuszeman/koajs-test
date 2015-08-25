@@ -1,13 +1,32 @@
 KoaJS test app
---------------
+==============
 
-To run:
+__To run:__
 
 ```
-node --harmony
+node --harmony index.js
 ```
 
 API endpoint: http://localhost:3000/posts
+
+__DB setup / migrations:__
+
+This initialize repository i.e. create sqlite table for posts.
+
+```
+node --harmony migrate.js
+```
+
+___Note:___ We want to run migrations manually, so for obvious reasons, server with :memory: storage won't work.
+
+
+
+__To run tests:__
+
+```
+make test
+```
+
 
 __Configuration:__
 
@@ -18,12 +37,13 @@ Among default configuration this also implements three environments (test, dev, 
 This should only include deployment specific configuration like database username/password.
 
 
-__DB implementations__
+DB implementations
+------------------
 
 * mongodb - `repository/post.mongo`
 * sqlite - `repository/post.sqlite`
 
-`repository/manager` works as factory for database connection and repositories.  
+`repository/manager` works as factory and singleton for database connection and repositories.  
 Calling `repository.get('post')` creates a repository instance for posts. Depending on config file, mongodb or sqlite is selected.  
 Additional repositories could be implemented in `repository` folder following this file naming convention: 'REPOSITORY_NAME.DB_TYPE.js'.  
 
@@ -42,10 +62,9 @@ Both post repositories have this interface:
 
 
 Possible improvements
-=====================
+---------------------
 
-- Create route factory where you would just inject repository object and all routes would be created - now it's hardcoded for post repository only
 - Split env configs into individual files
 - Refactor `repository/post.sqlite` and `repository/post.mongo` and create 'abstract classes' for sqlite and mongodb repositories. 
 - Implement API Problem responses (application/problem+json)
-- ... many more ;)
+- Create route factory where you would just inject repository object and all routes would be created - now it's hardcoded for post repository only

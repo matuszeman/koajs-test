@@ -12,7 +12,7 @@
     "koa-hal": "^2.1.0",
     "koa-joi-router": "^2.0.0",
     "lodash": "^3.10.1",
-    "monk": "^1.0.1",
+    "mongoose": "^4.1.3",
     "sqlite3": "^3.0.10"
   },
   "devDependencies": {

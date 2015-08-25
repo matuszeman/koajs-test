@@ -1,2 +1,4 @@
 test/api
+test/lib
+test/lib/repository
 --harmony

@@ -12,7 +12,6 @@ console.log('App config:', config); //XXX
 
 //API: posts
 var repositoryManager = new RepositoryManager(config.repositoryManager);
-var postRepository = repositoryManager.get('post');
 
 var apiPostRouter = router();
 
@@ -22,6 +21,8 @@ apiPostRouter.route({
   method: 'get',
   path: '/',
   handler: function*() {
+    var postRepository = yield repositoryManager.get('post');
+    
     var items = yield postRepository.getAll();
 
     var resource = hal();
@@ -45,6 +46,8 @@ apiPostRouter.route({
     }
   },
   handler: function*() {
+    var postRepository = yield repositoryManager.get('post');
+    
     var item = yield postRepository.get(this.params.id);
     
     if(!item) {
@@ -68,7 +71,12 @@ apiPostRouter.route({
     }
   },
   handler: function*() {
-    var itemId = yield postRepository.post(this.request.body);
+    var postRepository = yield repositoryManager.get('post');
+    
+    var data = this.request.body;
+    data.created_at = new Date();
+    
+    var itemId = yield postRepository.post(data);
     
     this.status = 201;
     this.body = createPostHal(itemId);
@@ -90,6 +98,8 @@ apiPostRouter.route({
     }
   },
   handler: function*() {
+    var postRepository = yield repositoryManager.get('post');
+    
     var id = this.params.id;
 
     var entity = yield postRepository.get(id);
@@ -106,7 +116,9 @@ apiPostRouter.route({
 apiPostRouter.route({
   method: 'delete',
   path: '/',
-  handler: function*(){
+  handler: function*() {
+    var postRepository = yield repositoryManager.get('post');
+    
     yield postRepository.deleteAll();
 
     this.status = 204;
@@ -122,6 +134,8 @@ apiPostRouter.route({
     }
   },
   handler: function*() {
+    var postRepository = yield repositoryManager.get('post');
+    
     var id = this.params.id;
     
     var entity = yield postRepository.get(id);

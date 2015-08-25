@@ -1,11 +1,20 @@
-//var AbstractRepository = require('./abstract-repository');
 var Promise = require('bluebird');
+var mongoose = require('mongoose');
 
 module.exports = PostMongoRepository;
 
 function PostMongoRepository(db) {
   this.db = db;
-  this.collection = db.get('post');
+  
+  var schema = new mongoose.Schema({
+    title: String,
+    text: String,
+    created_at: Date
+  });
+  
+  this.model = db.model('Post', schema);
+  Promise.promisifyAll(this.model);
+  Promise.promisifyAll(this.model.prototype);
 }
 
 PostMongoRepository.prototype.init = function() {
@@ -13,44 +22,52 @@ PostMongoRepository.prototype.init = function() {
 }
 
 PostMongoRepository.prototype.get = function(id) {
-  return this.collection.findById(id).then(function(doc) {
-    return transformDoc(doc);
-  });
+  return this.model.findByIdAsync(id).then(transformDoc)
 }
 
 PostMongoRepository.prototype.getAll = function() {
-  return this.collection.find({}).then(function(res) {
-    return res.map(transformDoc);
+  return this.model.findAsync({}).then(function(ret) {
+    return ret.map(transformDoc)
   });
 }
 
 PostMongoRepository.prototype.post = function(data) {
-  data.createdAt = new Date();
-  return this.collection.insert(data).then(function(res) {
-    return res._id.toString();
-  });
+
+  var d = new this.model(data);
+  return d.saveAsync().then(function(doc) {
+    return doc[0]._id.toString();
+  })
+  
 }
 
 PostMongoRepository.prototype.put = function(id, data) {
-  return this.collection.updateById(id, data);
+  return this.model.updateAsync({
+    _id: id
+  }, data);
 }
 
 PostMongoRepository.prototype.delete = function(id) {
-
-  return this.collection.remove({
+  return this.model.removeAsync({
     _id: id
-  })
-
+  });
 }
 
-PostMongoRepository.prototype.deleteAll = function(id) {
-  return this.collection.remove();
+PostMongoRepository.prototype.deleteAll = function() {
+  return this.model.removeAsync({});
 }
 
 
 function transformDoc(doc) {
-  doc.id = doc._id.toString();
-  delete doc._id;
+  if(!doc) {
+    return doc;
+  }
   
-  return doc;
+  var d = doc.toObject({
+    versionKey: false
+  });
+
+  d.id = d._id;
+  delete d._id;
+
+  return d;
 }

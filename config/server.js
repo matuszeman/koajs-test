@@ -7,9 +7,11 @@ var defaultConfig = {
 
 var envConfigs = {
   prod: {
-    type: 'mongo',
-    options: {
-      host: 'localhost/koajs'
+    repositoryManager: {
+      type: 'mongo',
+      options: {
+        url: 'mongodb://localhost:27017/prod'
+      }
     }
   },
   dev: {
@@ -26,6 +28,9 @@ var envConfigs = {
       options: {
         file: ':memory:'
       }
+    },
+    mongoConnection: {
+      url: 'mongodb://localhost:27017/test'
     }
   }
 }

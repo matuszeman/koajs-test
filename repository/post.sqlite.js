@@ -31,7 +31,7 @@ PostSqliteRepository.prototype.post = function(data) {
   return this._insert('INSERT INTO ' + this.table + ' (title, text, created_at) VALUES ($title, $text, $createdAt)', {
     $title: data.title,
     $text: data.text,
-    $createdAt: new Date()
+    $createdAt: data.created_at
   });
   
 }

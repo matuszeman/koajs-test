@@ -11,12 +11,15 @@ beforeEach(function(done) {
   
   agent = request.agent(app.callback());
   
-  return repositoryManager.init()
-    .then(function() {
-      postRepository = repositoryManager.get('post');
-      
-      done()
-    });
+  return repositoryManager.init().then(function() {
+    return repositoryManager.get('post');
+  }).then(function(repo) {
+    postRepository = repo;
+  }).then(function(repo) {
+    return postRepository.deleteAll();
+  }).then(function() {
+    done();
+  });
   
 });
 

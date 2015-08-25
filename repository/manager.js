@@ -1,5 +1,7 @@
 var Joi = require('joi');
 var Promise = require('bluebird');
+var mongoose = require('./mongoose');
+var sqlite3 = require('sqlite3').verbose();
 
 module.exports = RepositoryManager;
 
@@ -7,32 +9,47 @@ function RepositoryManager(options) {
   validateOptions(options);
 
   this.options = options;
-  this.db = createDb(options.type, options.options);
   
+  this.db = null;
   this.repositories = [];
 }
 
 RepositoryManager.prototype.init = function() {
+  var self = this;
+
   //TODO migrations might go here
-  
-  return Promise.all([
-    this.get('post').init()
-  ])
+  return self.get('post').then(function(repo) {
+    return repo.init()
+  });
 }
 
 RepositoryManager.prototype.get = function(name) {
+  var self = this;
   
-  if(!this.repositories[name]) {
-    var Repo = require('./' + name + '.' + this.options.type);
-    this.repositories[name] = new Repo(this.db);
+  if(self.db) {
+    return Promise.resolve(createRepo(self.db));
   }
   
-  return this.repositories[name];
+  return openDb(self.options.type, self.options.options).then(function(db) {
+    self.db = db;
+    return createRepo(db);
+  })
+
+  function createRepo(db) {
+
+    if(!self.repositories[name]) {
+      var Repo = require('./' + name + '.' + self.options.type);
+      self.repositories[name] = new Repo(db);
+    }
+
+    return self.repositories[name];
+  }
+  
 }
 
 function validateOptions(options) {
   var mongoOptionsSchema = Joi.object().required().keys({
-    host: Joi.string().required()
+    url: Joi.string().required()
   });
 
   var sqliteOptionsSchema = Joi.object().required().keys({
@@ -57,17 +74,22 @@ function validateOptions(options) {
   
 }
 
-function createDb(type, options) {
+function openDb(type, options) {
 
   if(type === 'sqlite') {
-    var sqlite3 = require('sqlite3').verbose();
-    return new sqlite3.Database(options.file);
+    return Promise.resolve(new sqlite3.Database(options.file));
   }
 
   if(type === 'mongo') {
-    var db = require('monk')(options.host);
-    return db;
+    return new Promise(function(resolve, reject) {
+      var db = mongoose.createConnection(options.url);
+      db.once('open', function(rr) {
+        return resolve(db);
+      })
+
+      db.on('error', reject);
+    })
   }
   
-  throw "RepositoryManager: Not implemented repository type: " + type;
+  return Promise.reject("RepositoryManager: Not implemented repository type: " + type);
 }
