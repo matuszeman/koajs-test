@@ -1,0 +1,15 @@
+module.exports = {
+//  repositoryManager: {
+//    type: 'mongo',
+//    options: {
+//      url: 'mongodb://localhost:27017/dev'
+//    }
+//  }
+//  repositoryManager: {
+//    type: 'sqlite',
+//    options: {
+//      file: './data/dev.sqlite'
+//    }
+//  }
+}
+

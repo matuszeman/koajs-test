@@ -5,6 +5,11 @@ var defaultConfig = {
   repositoryManager: {}
 }
 
+var env = process.env.NODE_ENV;
+if(!env || ['prod', 'dev', 'test'].indexOf(env) === -1) {
+  throw "NODE_ENV not set - possible values: 'prod', 'dev', 'test'";
+}
+
 var envConfigs = {
   prod: {
     repositoryManager: {
@@ -18,7 +23,7 @@ var envConfigs = {
     repositoryManager: {
       type: 'sqlite',
       options: {
-        file: './data/db.sqlite'
+        file: './data/dev.sqlite'
       }
     }
   },
@@ -35,7 +40,7 @@ var envConfigs = {
   }
 }
 
-var env = process.env.NODE_ENV;
+
 var envConfig = null;
 if(env) {
   envConfig = envConfigs[env];
